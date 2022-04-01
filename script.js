@@ -18,61 +18,27 @@ function addBookToStorage() {
 
 function addBookToLibrary(book) {
   myLibrary.push(book);
-  renderBook(book);
 }
 
 function eventlocalStorage(book) {
   addBookToLibrary(book);
   addBookToStorage();
+  renderBook(book, myLibrary.length - 1);
 }
 
 function renderBooks() {
   for (let i = 0; i < myLibrary.length; i++) {
-    indexBook = myLibrary[i];
+    let indexBook = myLibrary[i];
 
-    const cardBook = document.createElement("div");
-    cardBook.classList.add("card-book");
-    cardBook.classList.add(`data-book${i}`);
-    const headerCard = document.createElement("h3");
-    const bodyCard = document.createElement("div");
-    bodyCard.classList.add("card-body");
-    const titleCard = document.createElement("h4");
-    const authorCard = document.createElement("h4");
-    const pagesCard = document.createElement("h4");
-    const divButtons = document.createElement("div");
-    divButtons.classList.add("btns-book");
-    const btnRead = document.createElement("button");
-    btnRead.classList.add("btn-read");
-    const btnRemove = document.createElement("button");
-    btnRead.classList.add("btn-remove");
-
-    headerCard.innerText = "Book";
-    titleCard.innerText = `Title: ${indexBook.title}`;
-    authorCard.innerText = `Author: ${indexBook.author}`;
-    pagesCard.innerText = `Pages: ${indexBook.page}`;
-    btnRead.innerText = `${indexBook.read}`;
-    btnRemove.innerText = "remove";
-
-    bodyCard.appendChild(headerCard);
-    bodyCard.appendChild(titleCard);
-    bodyCard.appendChild(authorCard);
-    bodyCard.appendChild(pagesCard);
-
-    divButtons.appendChild(btnRead);
-    divButtons.appendChild(btnRemove);
-
-    cardBook.appendChild(headerCard);
-    cardBook.appendChild(bodyCard);
-    cardBook.appendChild(divButtons);
-
-    screenLibrary.appendChild(cardBook);
+    renderBook(indexBook, i);
   }
   statusBook();
 }
 
-function renderBook(book) {
+function renderBook(book, i) {
   const cardBook = document.createElement("div");
   cardBook.classList.add("card-book");
+  cardBook.classList.add(`"data-book="${i}`);
   const headerCard = document.createElement("h3");
   const bodyCard = document.createElement("div");
   bodyCard.classList.add("card-body");
@@ -84,7 +50,7 @@ function renderBook(book) {
   const btnRead = document.createElement("button");
   btnRead.classList.add("btn-read");
   const btnRemove = document.createElement("button");
-  btnRead.classList.add("btn-remove");
+  btnRemove.classList.add("btn-remove");
 
   headerCard.innerText = "Book";
   titleCard.innerText = `Title: ${book.title}`;
@@ -124,16 +90,10 @@ function statusBook() {
 }
 
 function changeStatus() {
-  let buttons = document.querySelectorAll(".btn-read");
+  let buttons = document.querySelectorAll(".btn-remove");
   buttons.forEach((button) => {
     button.addEventListener("click", (e) => {
-      if (e.target.innerText == "read") {
-        e.target.innerText = "unread";
-        e.target.style.backgroundColor = "red";
-      } else {
-        e.target.innerText = "read";
-        e.target.style.backgroundColor = "green";
-      }
+      console.log(e.target);
     });
   });
 }
