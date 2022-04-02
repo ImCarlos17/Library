@@ -3,7 +3,6 @@ const myForm = document.querySelector(".form");
 
 const storageBook = localStorage.getItem("book");
 const myLibrary = storageBook ? JSON.parse(storageBook) : [];
-renderBooks();
 
 function Book(title, author, page, read) {
   (this.title = title),
@@ -12,7 +11,7 @@ function Book(title, author, page, read) {
     (this.read = read);
 }
 
-function addBookToStorage() {
+function updateStorage() {
   localStorage.setItem("book", JSON.stringify(myLibrary));
 }
 
@@ -20,19 +19,10 @@ function addBookToLibrary(book) {
   myLibrary.push(book);
 }
 
-function eventlocalStorage(book) {
-  addBookToLibrary(book);
-  addBookToStorage();
-  renderBook(book, myLibrary.length - 1);
-}
-
-function renderBooks() {
-  for (let i = 0; i < myLibrary.length; i++) {
-    let indexBook = myLibrary[i];
-
-    renderBook(indexBook, i);
-  }
-  statusBook();
+function changeBookStatus(element) {
+  element.innerText == "read"
+    ? (element.style.backgroundColor = "green")
+    : (element.style.backgroundColor = "red");
 }
 
 function renderBook(book, i) {
@@ -76,55 +66,38 @@ function renderBook(book, i) {
   cardBook.appendChild(divButtons);
 
   screenLibrary.appendChild(cardBook);
-  statusBook();
+  changeBookStatus(btnRead);
 }
-function statusBook() {
-  let buttons = document.querySelectorAll(".btn-read");
 
-  buttons.forEach((btn) => {
-    if (btn.innerText == "read") {
-      btn.style.backgroundColor = "green";
-    } else {
-      btn.style.backgroundColor = "red";
-    }
-  });
+function renderBooks() {
+  myLibrary.forEach((actualBook, index) => renderBook(actualBook, index));
+}
+
+function updateBookStatus(btnValue, position) {
+  myLibrary[position].read = `${btnValue !== "read" ? "read" : "unread"}`;
+  updateStorage();
 }
 
 function changeStatusText(e) {
   let position = e.target.dataset.book;
   let btnValue = e.target.innerText;
 
-  if (btnValue == "read") {
-    e.target.innerText = "unread";
-  } else {
-    e.target.innerText = "read";
-  }
+  e.target.textContent = btnValue !== "read" ? "read" : "unread";
 
-  changeStatusLocal(btnValue, position);
+  changeBookStatus(e.target);
+  updateBookStatus(btnValue, position);
 }
 
-function changeStatusLocal(btnValue, position) {
-  if (btnValue == "read") {
-    myLibrary[position].read = "unread";
-    addBookToStorage();
-    statusBook();
-  } else {
-    myLibrary[position].read = "read";
-    addBookToStorage();
-    statusBook();
-  }
+function removeBookDom(position) {
+  screenLibrary.removeChild(screenLibrary.children[position]);
 }
 
 function removeBook(e) {
   let position = e.target.dataset.book;
   myLibrary.splice(position, 1);
-  addBookToStorage();
+  updateStorage();
 
   removeBookDom(position);
-}
-
-function removeBookDom(position) {
-  screenLibrary.removeChild(screenLibrary.children[position]);
 }
 
 myForm.addEventListener("submit", (e) => {
@@ -138,5 +111,9 @@ myForm.addEventListener("submit", (e) => {
   const book = new Book(title, author, pages, readBook);
   myForm.reset();
 
-  eventlocalStorage(book);
+  addBookToLibrary(book);
+  updateStorage();
+  renderBook(book, myLibrary.length - 1);
 });
+
+renderBooks();
