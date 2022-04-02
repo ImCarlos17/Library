@@ -49,6 +49,8 @@ function renderBook(book, i) {
   divButtons.classList.add("btns-book");
   const btnRead = document.createElement("button");
   btnRead.classList.add("btn-read");
+  btnRead.setAttribute("data-book", `${i}`);
+  btnRead.addEventListener("click", changeStatusText);
   const btnRemove = document.createElement("button");
   btnRemove.addEventListener("click", removeBook);
   btnRemove.classList.add("btn-remove");
@@ -88,10 +90,35 @@ function statusBook() {
   });
 }
 
+function changeStatusText(e) {
+  let position = e.target.dataset.book;
+  let btnValue = e.target.innerText;
+
+  if (btnValue == "read") {
+    e.target.innerText = "unread";
+  } else {
+    e.target.innerText = "read";
+  }
+
+  changeStatusLocal(btnValue, position);
+}
+
+function changeStatusLocal(btnValue, position) {
+  if (btnValue == "read") {
+    myLibrary[position].read = "unread";
+    addBookToStorage();
+    statusBook();
+  } else {
+    myLibrary[position].read = "read";
+    addBookToStorage();
+    statusBook();
+  }
+}
+
 function removeBook(e) {
   let position = e.target.dataset.book;
   myLibrary.splice(position, 1);
-  localStorage.setItem("book", JSON.stringify(myLibrary));
+  addBookToStorage();
 
   removeBookDom(position);
 }
