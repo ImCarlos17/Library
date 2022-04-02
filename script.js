@@ -38,7 +38,7 @@ function renderBooks() {
 function renderBook(book, i) {
   const cardBook = document.createElement("div");
   cardBook.classList.add("card-book");
-  cardBook.classList.add(`"data-book="${i}`);
+  cardBook.setAttribute("data-book", `${i}`);
   const headerCard = document.createElement("h3");
   const bodyCard = document.createElement("div");
   bodyCard.classList.add("card-body");
@@ -50,7 +50,9 @@ function renderBook(book, i) {
   const btnRead = document.createElement("button");
   btnRead.classList.add("btn-read");
   const btnRemove = document.createElement("button");
+  btnRemove.addEventListener("click", removeBook);
   btnRemove.classList.add("btn-remove");
+  btnRemove.setAttribute("data-book", `${i}`);
 
   headerCard.innerText = "Book";
   titleCard.innerText = `Title: ${book.title}`;
@@ -74,7 +76,6 @@ function renderBook(book, i) {
   screenLibrary.appendChild(cardBook);
   statusBook();
 }
-
 function statusBook() {
   let buttons = document.querySelectorAll(".btn-read");
 
@@ -85,20 +86,19 @@ function statusBook() {
       btn.style.backgroundColor = "red";
     }
   });
-
-  changeStatus();
 }
 
-function changeStatus() {
-  let buttons = document.querySelectorAll(".btn-remove");
-  buttons.forEach((button) => {
-    button.addEventListener("click", (e) => {
-      console.log(e.target);
-    });
-  });
+function removeBook(e) {
+  let position = e.target.dataset.book;
+  myLibrary.splice(position, 1);
+  localStorage.setItem("book", JSON.stringify(myLibrary));
+
+  removeBookDom(position);
 }
 
-function removeBook() {}
+function removeBookDom(position) {
+  screenLibrary.removeChild(screenLibrary.children[position]);
+}
 
 myForm.addEventListener("submit", (e) => {
   e.preventDefault();
